@@ -3,8 +3,8 @@ import { endpoints } from './config.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const auth0 = new auth0.WebAuth({
-        domain: process.env.GITHUB_SECRET_AUTH_DOMAIN,
-        clientID: process.env.GITHUB_SECRET_CLIENT_ID,
+        domain: process.env.SECRET_AUTH_DOMAIN,
+        clientID: process.env.SECRET_CLIENT_ID,
         redirectUri: `${window.location.origin}/dashboard.html`,
         responseType: 'token id_token',
         scope: 'openid profile email'
