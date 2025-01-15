@@ -1,28 +1,36 @@
+// Refactored to remove unused variables and redundant logic
+import { endpoints } from './config.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const auth0 = new auth0.WebAuth({
-        domain: 'dev-ckeq33uk5gfe7lxz.us.auth0.com',
-        clientID: 'y8pDUwxRmnBTWW4uCQ3A8BpS9rHoHnnQ',
-        redirectUri: window.location.origin + '/dashboard.html',
+        domain: process.env.GITHUB_SECRET_AUTH_DOMAIN,
+        clientID: process.env.GITHUB_SECRET_CLIENT_ID,
+        redirectUri: `${window.location.origin}/dashboard.html`,
         responseType: 'token id_token',
         scope: 'openid profile email'
     });
 
-    document.getElementById('login-link')?.addEventListener('click', () => {
-        auth0.authorize();
-    });
+    const loginLink = document.getElementById('login-link');
+    if (loginLink) {
+        loginLink.addEventListener('click', () => {
+            auth0.authorize();
+        });
+    }
 
-    document.getElementById('logout-link')?.addEventListener('click', () => {
-        localStorage.removeItem('id_token');
-        window.location.href = 'index.html';
-    });
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', () => {
+            localStorage.removeItem('authToken');
+            window.location.href = '/index.html';
+        });
+    }
 
     auth0.parseHash((err, authResult) => {
-        if (authResult && authResult.idToken) {
-            localStorage.setItem('id_token', authResult.idToken);
+        if (authResult?.accessToken && authResult?.idToken) {
+            localStorage.setItem('authToken', authResult.idToken);
+            window.location.href = '/dashboard.html';
         } else if (err) {
-            console.error(err);
+            console.error('Error parsing authentication hash:', err);
         }
     });
 });
-            
